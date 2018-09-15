@@ -17,11 +17,12 @@ sources:
 targets:
   all: 
     depends: 
-      - figures/discharge_conditions.png
+      - figures/discharge_conditions-2017-08-22.png
+      - figures/discharge_conditions_p05.png
       
       
   plot_date:
-    command: c(I("2018-03-06"))
+    command: c(I("2017-08-22"))
     
   us_states:
     command: state_sp()
@@ -44,5 +45,67 @@ targets:
   col_sites:
     command: color_sites(sp_sites, dv_stats)
     
-  figures/discharge_conditions.png:
+  figures/discharge_conditions-2017-08-22.png:
     command: plot_ww_map(target_name, us_states, col_sites, 'images/usgs_logo_black.png')
+    
+  figures/discharge_conditions_p00.png:
+    command: plot_ww_map(target_name, us_states, col_sites, 'images/usgs_logo_black.png', perc = I("(0,0.05]"))
+    
+  figures/discharge_conditions_p05.png:
+    command: plot_ww_map(target_name, us_states, col_sites, 'images/usgs_logo_black.png', perc = I("(0.05,0.1]"))
+    
+  figures/discharge_conditions_p10.png:
+    command: plot_ww_map(target_name, us_states, col_sites, 'images/usgs_logo_black.png', perc = I('(0.1,0.15]'))
+    
+  figures/discharge_conditions_p15.png:
+    command: plot_ww_map(target_name, us_states, col_sites, 'images/usgs_logo_black.png', perc = I("(0.15,0.2]"))
+    
+  figures/discharge_conditions_p20.png:
+    command: plot_ww_map(target_name, us_states, col_sites, 'images/usgs_logo_black.png', perc = I("(0.2,0.25]"))
+    
+  figures/discharge_conditions_p25.png:
+    command: plot_ww_map(target_name, us_states, col_sites, 'images/usgs_logo_black.png', perc = I("(0.25,0.3]"))
+    
+  figures/discharge_conditions_p30.png:
+    command: plot_ww_map(target_name, us_states, col_sites, 'images/usgs_logo_black.png', perc = I("(0.3,0.35]"))
+    
+  figures/discharge_conditions_p35.png:
+    command: plot_ww_map(target_name, us_states, col_sites, 'images/usgs_logo_black.png', perc = I("(0.35,0.4]"))
+    
+  figures/discharge_conditions_p40.png:
+    command: plot_ww_map(target_name, us_states, col_sites, 'images/usgs_logo_black.png', perc = I("(0.4,0.45]"))
+    
+  figures/discharge_conditions_p45.png:
+    command: plot_ww_map(target_name, us_states, col_sites, 'images/usgs_logo_black.png', perc = I("(0.45,0.5]"))
+    
+  figures/discharge_conditions_p50.png:
+    command: plot_ww_map(target_name, us_states, col_sites, 'images/usgs_logo_black.png', perc = I("(0.5,0.55]"))
+    
+  figures/discharge_conditions_p55.png:
+    command: plot_ww_map(target_name, us_states, col_sites, 'images/usgs_logo_black.png', perc = I("(0.55,0.6]"))
+    
+  figures/discharge_conditions_p60.png:
+    command: plot_ww_map(target_name, us_states, col_sites, 'images/usgs_logo_black.png', perc = I("(0.6,0.65]"))
+    
+  figures/discharge_conditions_p65.png:
+    command: plot_ww_map(target_name, us_states, col_sites, 'images/usgs_logo_black.png', perc = I("(0.65,0.7]"))
+    
+  figures/discharge_conditions_p70.png:
+    command: plot_ww_map(target_name, us_states, col_sites, 'images/usgs_logo_black.png', perc = I("(0.7,0.75]"))
+    
+  figures/discharge_conditions_p75.png:
+    command: plot_ww_map(target_name, us_states, col_sites, 'images/usgs_logo_black.png', perc = I("(0.75,0.8]"))
+    
+  figures/discharge_conditions_p80.png:
+    command: plot_ww_map(target_name, us_states, col_sites, 'images/usgs_logo_black.png', perc = I("(0.8,0.85]"))
+    
+  figures/discharge_conditions_p85.png:
+    command: plot_ww_map(target_name, us_states, col_sites, 'images/usgs_logo_black.png', perc = I("(0.85,0.9]"))
+    
+  figures/discharge_conditions_p90.png:
+    command: plot_ww_map(target_name, us_states, col_sites, 'images/usgs_logo_black.png', perc = I("(0.9,0.95]"))
+    
+  figures/discharge_conditions_p95.png:
+    command: plot_ww_map(target_name, us_states, col_sites, 'images/usgs_logo_black.png', perc = I("(0.95,1]"))
+    
+      

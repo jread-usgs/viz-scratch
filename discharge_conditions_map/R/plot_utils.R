@@ -1,4 +1,4 @@
-plot_ww_map <- function(filename, us_states, col_sites, watermark_file){
+plot_ww_map <- function(filename, us_states, col_sites, watermark_file, perc = NULL){
   png(filename = filename, width = 10, height = 6.5, res = 300, units = 'in')
   
   par(mai=c(0,0,0,0), omi=c(0,0,0,0), xaxs = 'i', yaxs = 'i')
@@ -25,22 +25,34 @@ plot_ww_map <- function(filename, us_states, col_sites, watermark_file){
   plot(col_sites, add = TRUE, col = non_cols, 
        pch = 20, cex = 0.5, lwd=0)
   
+  percs <- seq(0,1, by=0.05)
+  
   ext_cut <- c(0.1, 0.9)
-  med_sites <- col_sites[is.na(col_sites$per) | (col_sites$per < ext_cut[2] & col_sites$per > ext_cut[1]), ]
+  bg_col <- ifelse(!is.na(col_sites$col), paste0(col_sites$col, alpha_hex), NA)
   
-  ext_sites <- col_sites[!is.na(col_sites$per) & (col_sites$per >= ext_cut[2] | col_sites$per <= ext_cut[1]), ]
+  if (!is.null(perc)){
+    plot_cols <- cut(col_sites$per, percs) == perc
+    bg_col[!plot_cols] <- NA
+  }
+  med_sites <- is.na(col_sites$per) | (col_sites$per < ext_cut[2] & col_sites$per > ext_cut[1])
+  
+  ext_sites <- !is.na(col_sites$per) & (col_sites$per >= ext_cut[2] | col_sites$per <= ext_cut[1])
   
   
-  plot(med_sites, add = TRUE, col = med_sites$col,
-       bg = ifelse(!is.na(med_sites$col), paste0(med_sites$col, alpha_hex), NA),
+  plot(col_sites[med_sites,], add = TRUE, col = col_sites$col[med_sites],
+       bg = bg_col[med_sites],
        pch = 21, cex = 0.6, lwd = 0.5)
   
   # put extreme sites on the top of the plot z-index:
-  plot(ext_sites, add = TRUE, col = ext_sites$col,
-       bg = ifelse(!is.na(ext_sites$col), paste0(ext_sites$col, alpha_hex), NA),
+  plot(col_sites[ext_sites,], add = TRUE, col = col_sites$col[ext_sites],
+       bg = bg_col[ext_sites],
        pch = 21, cex = 0.6, lwd = 0.5)
   
-  
+  if (!is.null(perc)){
+    plot(col_sites[med_sites | ext_sites, ], add = TRUE, col = col_sites$col[med_sites | ext_sites],
+         bg = bg_col[med_sites | ext_sites],
+         pch = 21, cex = 0.6, lwd = 0.5)
+  }
   coord_space <- par()$usr
   
   # --- watermark ---
@@ -74,7 +86,14 @@ plot_ww_map <- function(filename, us_states, col_sites, watermark_file){
   mid <- xs[percs == 0.5]
   high_norm <- xs[percs == 0.75]
   
-  points(xs, ys, bg = paste0(leg_cols, alpha_hex), col = leg_cols, pch = 21, cex = 1.8, lwd = 1)
+  bg_leg_cols <- paste0(leg_cols, alpha_hex)
+  
+  if (!is.null(perc)){
+    d = cut(0.15, percs) # a hack to get the "levels"
+    levels(d) == perc
+    bg_leg_cols[!levels(d) == perc] <- NA
+  }
+  points(xs, ys, bg = bg_leg_cols, col = leg_cols, pch = 21, cex = 1.8, lwd = 1)
   
   lines(c(low_norm, low_norm), c(ys[1]+55000, ys[1]+140000), col = 'black', lwd = 1.4)
   text(mid, ys[1]+100000, 'Normal')
@@ -102,7 +121,6 @@ color_sites <- function(sp_sites, dv_stats){
   
   sp_sites@data$col <- NA
   sp_sites@data$per <- NA
-  
   for (i in 1:length(sites$site_no)){
     #needed to loop to keep these in order? sp...
     which.i <- sp_sites$site_no == sites$site_no[i]
