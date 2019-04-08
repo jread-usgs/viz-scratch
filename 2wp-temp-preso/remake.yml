@@ -1,0 +1,73 @@
+target_default: all
+
+packages:
+  - rgdal
+  - readr
+  - rgeos
+  - sp
+  - dplyr
+  - utils
+  - mapdata
+  - dataRetrieval
+  
+## All R files that are used must be listed here:
+sources:
+  - R/wqp_utils.R
+  - R/spatial_utils.R
+  - R/mapping_utils.R
+
+targets:
+  all:
+    depends: 
+      - figures/all_temperature_sites.png
+      - figures/n100_temperature_sites.png
+      - figures/n10000_temperature_sites.png
+  
+  
+  proj_string:
+    command: c(I("+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs"))
+    
+  nwis_site_nums:
+    command: nwis_iv_sites()
+  
+  ecosheds_sites:
+    command: read_ecosheds('~/Downloads/sheds-stations.csv', proj_string)
+    
+  nwis_sites:
+    command: site_shifted_nwis(nwis_site_nums)
+    
+  norwest_sites:
+    command: read_shp_zips(I('../../low-flows/cache/norwest'), proj_string)
+
+  noreast_sites:
+    command: read_shp_zips(I('../../low-flows/cache/noreast'), proj_string)
+    
+  temperature_sites:
+    command: wqp_temperature_sites()
+    
+  temperature_sites_n100:
+    command: filter_nresults(temperature_sites, I(100))
+    
+  temperature_sites_n10000:
+    command: filter_nresults(temperature_sites, I(10000))
+    
+  temperature_spatial_all:
+    command: sites_shifted(temperature_sites)
+    
+  temperature_spatial_n100:
+    command: sites_shifted(temperature_sites_n100)
+
+  temperature_spatial_n10000:
+    command: sites_shifted(temperature_sites_n10000)
+    
+  states_spatial:
+    command: get_shifted_states()
+  
+  figures/all_temperature_sites.png:
+    command: plot_site_map(target_name, states_spatial, temperature_spatial_all, temperature_sites, norwest_sites, noreast_sites, nwis_sites, ecosheds_sites)
+    
+  figures/n10000_temperature_sites.png:
+    command: plot_site_map(target_name, states_spatial, temperature_spatial_n10000, temperature_sites_n10000, norwest_sites, noreast_sites, nwis_sites, ecosheds_sites)
+    
+  figures/n100_temperature_sites.png:
+    command: plot_site_map(target_name, states_spatial, temperature_spatial_n100, temperature_sites_n100, norwest_sites, noreast_sites, nwis_sites, ecosheds_sites)
