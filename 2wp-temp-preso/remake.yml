@@ -20,8 +20,7 @@ targets:
   all:
     depends: 
       - figures/all_temperature_sites.png
-      - figures/n100_temperature_sites.png
-      - figures/n10000_temperature_sites.png
+      - figures/continuous_temperature.png
   
   
   proj_string:
@@ -45,29 +44,15 @@ targets:
   temperature_sites:
     command: wqp_temperature_sites()
     
-  temperature_sites_n100:
-    command: filter_nresults(temperature_sites, I(100))
-    
-  temperature_sites_n10000:
-    command: filter_nresults(temperature_sites, I(10000))
-    
   temperature_spatial_all:
     command: sites_shifted(temperature_sites)
-    
-  temperature_spatial_n100:
-    command: sites_shifted(temperature_sites_n100)
-
-  temperature_spatial_n10000:
-    command: sites_shifted(temperature_sites_n10000)
     
   states_spatial:
     command: get_shifted_states()
   
+  figures/continuous_temperature.png:
+    command: plot_uv_map(target_name, states_spatial, nwis_sites_spatial = nwis_sites, norwest_sites, noreast_sites, ecosheds_sites)
+  
   figures/all_temperature_sites.png:
-    command: plot_site_map(target_name, states_spatial, temperature_spatial_all, temperature_sites, norwest_sites, noreast_sites, nwis_sites, ecosheds_sites)
+    command: plot_all_map(target_name, states_spatial, nwis_sites_spatial = nwis_sites, norwest_sites, noreast_sites, ecosheds_sites, temperature_spatial_all)
     
-  figures/n10000_temperature_sites.png:
-    command: plot_site_map(target_name, states_spatial, temperature_spatial_n10000, temperature_sites_n10000, norwest_sites, noreast_sites, nwis_sites, ecosheds_sites)
-    
-  figures/n100_temperature_sites.png:
-    command: plot_site_map(target_name, states_spatial, temperature_spatial_n100, temperature_sites_n100, norwest_sites, noreast_sites, nwis_sites, ecosheds_sites)
